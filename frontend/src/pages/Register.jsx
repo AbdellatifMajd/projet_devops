@@ -5,7 +5,7 @@ import { useState } from "react";
 import { registerFormControls } from "../config";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
-import { registerUser } from "../store/authSlice";
+import { registerUser } from "../store/AuthSlice";
 
 function Register() {
 const initialFormData = {

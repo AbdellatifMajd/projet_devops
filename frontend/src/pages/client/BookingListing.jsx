@@ -7,7 +7,7 @@ import { sortOptions } from "../../config";
 import BookingClientCard from "../../components/booking/BookingClientCard";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchFilteredRooms } from "../../store/ClientRoomSlice";
-import { createNewBooking, fetchUserBookings } from "../../store/bookingSlice";
+import { createNewBooking, fetchUserBookings } from "../../store/BookingSlice";
 
 function BookingListing() {
   const [buttonMenu, setButtonMenu] = useState(null);

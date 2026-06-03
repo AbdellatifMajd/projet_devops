@@ -23,13 +23,13 @@ import {
   AccountCircle,
   Menu as MenuIcon,
 } from "@mui/icons-material";
-import { logoutUser } from "../../store/authSlice";
+import { logoutUser } from "../../store/AuthSlice";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import ClientBookingWrapper from "./ClientBookingWrapper";
 import { Sheet } from "lucide-react";
-import { fetchUserBookings } from "../../store/bookingSlice";
+import { fetchUserBookings } from "../../store/BookingSlice";
 
 function BookingHeader() {
   const { user } = useSelector((state) => state.auth);
