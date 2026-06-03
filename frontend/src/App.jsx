@@ -8,7 +8,7 @@ import AdminLayout from "./components/admin/AdminLayout";
 import BookingLayout from "./components/booking/BookingLayout";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
-import { checkAuthUser } from "./store/authSlice";
+import { checkAuthUser } from "./store/AuthSlice";
 import Room from "./pages/admin/Room";
 import BookingListing from "./pages/client/BookingListing";
 import CheckoutBooking from "./pages/client/CheckoutBooking";

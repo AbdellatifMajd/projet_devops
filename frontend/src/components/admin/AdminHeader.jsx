@@ -1,7 +1,7 @@
 import Button from "@mui/material/Button"
 import { AlignJustify, LogOut } from "lucide-react"
 import { useDispatch } from "react-redux"
-import { logoutUser } from "../../store/authSlice";
+import { logoutUser } from "../../store/AuthSlice";
 
 function AdminHeader({setOpenHeader}) {
     const dispatch = useDispatch();
