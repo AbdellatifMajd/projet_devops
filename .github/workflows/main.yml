@@ -28,7 +28,7 @@ jobs:
         context: ./backend
         file: ./backend/Dockerfile
         push: true
-        tags: ${{ secrets.MAJD1_SECRET_NAME }}/projet_devops-backend:latest
+        tags: abdellatifmajd123/projet_devops-backend:latest
 
     # 4. Build & Push de l'image Frontend (React)
     - name: Build and Push React Image
@@ -37,5 +37,5 @@ jobs:
         context: ./frontend
         file: ./frontend/Dockerfile
         push: true
-        tags: ${{ secrets.MAJD1_SECRET_NAME }}/projet_devops-frontend:latest
+        tags: abdellatifmajd123/projet_devops-frontend:latest
 
