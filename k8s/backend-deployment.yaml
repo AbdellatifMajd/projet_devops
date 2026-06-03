@@ -19,13 +19,29 @@ spec:
           ports:
             - containerPort: 8080 # Le port par défaut de Spring Boot
           env:
-            # On remplace la configuration de votre application.properties par l'adresse Kubernetes de MySQL
             - name: SPRING_DATASOURCE_URL
               value: "jdbc:mysql://mysql-service:3306/devopsdb?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC"
             - name: SPRING_DATASOURCE_USERNAME
               value: "root"
             - name: SPRING_DATASOURCE_PASSWORD
               value: "root"
+
+            # On récupère les clés Cloudinary depuis le Secret Kubernetes
+            - name: CLOUDINARY_CLOUD_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: CLOUDINARY_CLOUD_NAME
+            - name: CLOUDINARY_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: CLOUDINARY_API_KEY
+            - name: CLOUDINARY_API_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: CLOUDINARY_API_SECRET
 ---
 apiVersion: v1
 kind: Service
