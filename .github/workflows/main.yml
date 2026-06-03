@@ -36,7 +36,7 @@ jobs:
         context: ./backend                  # Il va chercher le code dans le dossier backend
         file: ./backend/Dockerfile          # Il utilise le Dockerfile qui s'y trouve
         push: true                          # Il l'envoie (push) sur Docker Hub
-        tags: ${{ secrets.MAJD1_SECRET_NAME }}/projet_devops-backend:latest
+        tags: abdellatifmajd123/projet_devops-backend:latest
 
     # Étape D : On fabrique l'image du Frontend et on l'envoie sur Docker Hub
     - name: 4. Création et Envoi de l'image Frontend (React)
@@ -45,7 +45,7 @@ jobs:
         context: ./frontend                 # Il va chercher le code dans le dossier frontend
         file: ./frontend/Dockerfile         # Il utilise le Dockerfile qui s'y trouve
         push: true                          # Il l'envoie (push) sur Docker Hub
-        tags: ${{ secrets.MAJD1_SECRET_NAME }}/projet_devops-frontend:latest
+        tags: abdellatifmajd123/projet_devops-frontend:latest
 
 
   # ========================================================================
