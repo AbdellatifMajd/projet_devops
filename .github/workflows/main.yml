@@ -1,41 +1,77 @@
-name: CI/CD Pipeline
+name: Pipeline CI/CD - Mon Projet DevOps
 
-# Déclencheur : Le pipeline se lance à chaque push sur la branche principale
+# ------------------------------------------------------------------------
+# LE DÉCLENCHEUR : Quand est-ce que le pipeline se met au travail ?
+# ------------------------------------------------------------------------
 on:
   push:
-    branches: [ "main", "master" ]
+    branches: [ "main", "master" ] # Le pipeline se lance dès que vous poussez du code sur main ou master
 
 jobs:
+
+  # ========================================================================
+  # PARTIE 1 : LA COMPILATION ET L'ENVOI (CI)
+  # Cette partie s'exécute sur les serveurs gratuits de GitHub dans le cloud.
+  # ========================================================================
   build-and-push:
-    runs-on: ubuntu-latest
+    name: 🐳 Construction et Envoi des Images sur Docker Hub
+    runs-on: ubuntu-latest # On demande à GitHub de nous prêter une machine Linux vierge
 
     steps:
-    # 1. Récupérer le code du dépôt
-    - name: Checkout source code
+    # Étape A : On télécharge le code de votre projet sur la machine virtuelle de GitHub
+    - name: 1. Récupération du code source
       uses: actions/checkout@v3
 
-    # 2. Se connecter à Docker Hub
-    - name: Login to Docker Hub
+    # Étape B : On se connecte à votre compte Docker Hub avec les secrets configurés
+    - name: 2. Connexion à Docker Hub
       uses: docker/login-action@v2
       with:
-        username: ${{ secrets.MAJD1_SECRET_NAME }}
-        password: ${{ secrets.MAJD1_TOKEN }}
+        username: ${{ secrets.MAJD1_SECRET_NAME }} # Va lire automatiquement "abdellatifmajd123"
+        password: ${{ secrets.MAJD1_TOKEN }}    # Va lire votre token sécurisé
 
-    # 3. Build & Push de l'image Backend (Spring Boot)
-    - name: Build and Push Spring Boot Image
+    # Étape C : On fabrique l'image du Backend et on l'envoie sur Docker Hub
+    - name: 3. Création et Envoi de l'image Backend (Spring Boot)
       uses: docker/build-push-action@v4
       with:
-        context: ./backend
-        file: ./backend/Dockerfile
-        push: true
-        tags: abdellatifmajd123/projet_devops-backend:latest
+        context: ./backend                  # Il va chercher le code dans le dossier backend
+        file: ./backend/Dockerfile          # Il utilise le Dockerfile qui s'y trouve
+        push: true                          # Il l'envoie (push) sur Docker Hub
+        tags: ${{ secrets.MAJD1_SECRET_NAME }}/projet_devops-backend:latest
 
-    # 4. Build & Push de l'image Frontend (React)
-    - name: Build and Push React Image
+    # Étape D : On fabrique l'image du Frontend et on l'envoie sur Docker Hub
+    - name: 4. Création et Envoi de l'image Frontend (React)
       uses: docker/build-push-action@v4
       with:
-        context: ./frontend
-        file: ./frontend/Dockerfile
-        push: true
-        tags: abdellatifmajd123/projet_devops-frontend:latest
+        context: ./frontend                 # Il va chercher le code dans le dossier frontend
+        file: ./frontend/Dockerfile         # Il utilise le Dockerfile qui s'y trouve
+        push: true                          # Il l'envoie (push) sur Docker Hub
+        tags: ${{ secrets.MAJD1_SECRET_NAME }}/projet_devops-frontend:latest
 
+
+  # ========================================================================
+  # PARTIE 2 : LE DÉPLOIEMENT AUTOMATIQUE (CD)
+  # Cette partie s'exécute DIRECTEMENT SUR VOTRE MACBOOK AIR.
+  # ========================================================================
+  deploy-to-minikube:
+    name: ☸️ Déploiement Continu sur le Minikube Local
+    needs: build-and-push # /!\ IMPORTANT : On attend d'abord que les images Docker soient prêtes et envoyées
+    runs-on: self-hosted   # GitHub va donner les ordres directement à votre Mac
+
+    steps:
+    # Étape A : Votre Mac télécharge la dernière version du code (pour avoir les fichiers Kubernetes .yaml à jour)
+    - name: 1. Récupération des fichiers de configuration sur le Mac
+      uses: actions/checkout@v3
+
+    # Étape B : Votre Mac applique les fichiers de déploiement à votre Minikube local
+    - name: 2. Application des manifests Kubernetes sur Minikube
+      run: |
+        # On dit à Kubernetes d'installer ou de mettre à jour vos composants
+        # (Assurez-vous d'avoir créé un dossier nommé "k8s" à la racine de votre projet avec vos fichiers YAML dedans)
+        kubectl apply -f k8s/
+        
+    # Étape C : Sécurité pour forcer Kubernetes à télécharger la toute nouvelle image de Docker Hub
+    - name: 3. Redémarrage des Pods pour appliquer les nouvelles images
+      run: |
+        # Cette commande force Kubernetes à relancer les conteneurs avec les images fraîches de Docker Hub
+        kubectl rollout restart deployment backend-deployment
+        kubectl rollout restart deployment frontend-deployment
