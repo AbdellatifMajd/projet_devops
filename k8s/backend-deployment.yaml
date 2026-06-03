@@ -42,15 +42,24 @@ spec:
                 secretKeyRef:
                   name: app-secrets
                   key: CLOUDINARY_API_SECRET
+
+            - name: STRIPE_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: STRIPE_SECRET_KEY
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: backend-service
+  labels: # Permet au ServiceMonitor de trouver ce Service
+    app: backend
 spec:
   selector:
     app: backend
   ports:
-    - port: 8080
+    - name: http # Doit correspondre exactement au "port: http" du ServiceMonitor
+      port: 8080
       targetPort: 8080
-  type: ClusterIP # ClusterIP suffit si votre frontend communique avec lui au sein du cluster ou via un proxy
+  type: ClusterIP
