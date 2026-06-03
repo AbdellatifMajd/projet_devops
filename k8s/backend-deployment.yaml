@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment # Doit correspondre exactement au nom dans votre main.yml
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+        - name: backend
+          image: abdellatifmajd123/projet_devops-backend:latest # Votre image Docker Hub
+          imagePullPolicy: Always # Force Kubernetes à retélécharger l'image à chaque restart
+          ports:
+            - containerPort: 8080 # Le port par défaut de Spring Boot
+          env:
+            # On remplace la configuration de votre application.properties par l'adresse Kubernetes de MySQL
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:mysql://mysql-service:3306/devopsdb?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC"
+            - name: SPRING_DATASOURCE_USERNAME
+              value: "root"
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: "root"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service
+spec:
+  selector:
+    app: backend
+  ports:
+    - port: 8080
+      targetPort: 8080
+  type: ClusterIP # ClusterIP suffit si votre frontend communique avec lui au sein du cluster ou via un proxy

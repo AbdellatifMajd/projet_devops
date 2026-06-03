@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-deployment # Doit correspondre exactement au nom dans votre main.yml
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+        - name: frontend
+          image: abdellatifmajd123/projet_devops-frontend:latest # Votre image Docker Hub
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80 # Port 80 si votre Dockerfile utilise Nginx pour servir le build React
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-service
+spec:
+  selector:
+    app: frontend
+  ports:
+    - port: 80
+      targetPort: 80
+      nodePort: 30080 # Port fixe pour accéder à l'application depuis votre Mac
+  type: NodePort # Permet d'exposer le frontend à l'extérieur de Minikube
